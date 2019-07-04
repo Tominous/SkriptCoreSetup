@@ -23,7 +23,7 @@ command /setup:
         make console execute command "/pex group VIP+ prefix set ""&aVIP&6+ """
         make console execute command "/pex group MVP prefix set ""&bMVP """
         make console execute command "/pex group MVP+ prefix set ""&bMVP&6+ """
-        make console execute command "/pex group Trial-Mod prefix set ""&eTrail-Mod ""
+        make console execute command "/pex group Trial-Mod prefix set ""&eTrail-Mod """
         make console execute command "/pex group Mod prefix set ""&3Mod """
         make console execute command "/pex group Senior-Mod prefix set ""&3Senior-Mod"""
         make console execute command "/pex group Admin prefix set ""&cAdmin"""
