@@ -1,0 +1,392 @@
+
+#Perms:
+#2fa.respin
+#2fa.staff
+#sk.ban
+#sk.unban
+#sk.mute
+#sk.grant
+
+#Minehut Core - DO NOT USE GAMEAPI
+#Ignore Scoreboard Errors
+#Requirements:
+#Skript
+#Skript Addon: Ersatz
+#Skript Addon: Skellet
+#Skript Addon: skQuery
+#Skript Addon: skRayFall
+#Skript Addon: SkVault
+    #Skript Addon: TuSKe
+#Essentials
+#Essentials Chat
+#Vault
+#PermissionsEx - For /grant
+#If you don't use pex use /gmgrant for GroupManager
+#Skript By H3A - v1.5
+
+#2FA
+options:
+    Pin: true
+    
+    perms-pin: 2fa.staff
+    pin-noperm-msg: &a2FA &8&l» &7You dont have permission to use the command.
+    Pin-spawn: true
+    Creator: H3A &7- &cSubscribe to me on youtube. I have pvp montages.
+    
+    Pin-Staff-msg: &a2FA &8&l» &7Please, login with the command /pin [password]
+    Pin-NewStaff-msg: &a2FA &8&l» &7Please set your pin with the command /setpin [password]
+    Pin-Set: &a2FA &8&l» &7Your pin is set! [&b%arg-1%&7]
+    
+    Pin-NotSet-SetPin: &a2FA &8&l» &7Use /setpin if you want to login.
+    Pin-Reset: &a2FA &8&l» &7The pin of %arg-1% is resset!
+    
+    Pin-Already-Login: &a2FA &8&l» &7You already logged.
+    Pin-Login-Correct: &a2FA &8&l» &7You successfully logged in.
+    Pin-Login-Incorrect: &a2FA &8&l» &cIncorrect password.
+    
+    TimeLogin: 480
+    TimeOut-msg: &7Your time to login is out :c 
+
+#Credit
+#Please leave this.
+on join:    
+    send "&cBy {@Creator}"
+
+on join:
+    if player has permission "{@perms-pin}":
+        set {logged.%player%} to false
+on join:
+    if {@Pin} is true:
+        loop {@TimeLogin} times:
+            if {logged.%player%} is false:
+                if {pass.%player%} is not set:
+                    send "{@Pin-NewStaff-msg}" to player
+                    wait 5 second
+                if {pass.%player%} is set:
+                    send "{@Pin-Staff-msg}" to player
+                    wait 5 second
+        if {logged.%player%} is false:
+            kick player due to "{@TimeOut-msg}"
+    else:
+        set {logged.%player%} to true
+on break:
+    if {logged.%player%} is false:
+        cancel event
+on place:
+    if {logged.%player%} is false:
+        cancel event
+on any movement:
+    if {logged.%player%} is false:
+        cancel event
+on command:
+    if command is not "pin" or "setpin":
+        if {logged.%player%} is false:
+            cancel event
+
+command /pin [<text>]:
+    permission: {@perms-pin}
+    permission message: {@pin-noperm-msg}
+    trigger:
+        if {@Pin} is true:
+            if {logged.%player%} is false:
+                if arg-1 is set:
+                    if {pass.%player%} is arg-1:
+                        message "{@Pin-Login-Correct}"
+                        set {logged.%player%} to true
+                    if {pass.%player%} is not arg-1:
+                        kick player due to "{@Pin-Login-Incorrect}"
+                    if {pass.%player%} is not set:
+                        message "{@Pin-NotSet-SetPin}"
+                if arg-1 is not set:
+                    message "Usage: /pin [<password>]"
+                    message "Description: To pin in staff"
+            else:
+                message "{@Pin-Already-Login}"
+        else:
+            message "&cError: &fThis command is not enabled."
+            
+command /setpin [<text>]:
+    permission: {@perms-pin}
+    permission message: {@pin-noperm-msg}
+    trigger:
+        if {@Pin} is true:
+            if {logged.%player%} is false:
+                if arg-1 is set:
+                    if {pass.%player%} is not set:
+                        message "{@Pin-Set}"
+                        set {pass.%player%} to arg-1
+                        stop
+                    if {pass.%player%} is set:
+                        message "&cUser is already registered."
+                        stop
+                if arg-1 is not set:
+                    message "Usage: /setpin [<password>]"
+                    message "Description: To set your pin."
+            else:
+                message "{@Pin-Already-Login}"
+        else:
+            message "&cError: &fThis command is not enabled."
+command /resetpin [<offline player>]:
+    permission: 2fa.respin
+    permission message: {@pin-noperm-msg}
+    trigger:
+        if {@Pin} is true:
+            if arg-1 is set:
+                clear {pass.%arg-1%}
+                message "{@Pin-Reset}"
+            if arg-1 is not set:
+                message "Usage: /resetpin [<user>]"
+                message "Description: Reset your pin"
+        else:
+            message "&cError: &fThis command is not enabled."        
+            
+#Anti-Abuse
+command /god:
+    trigger:
+        send "&cYou failed."
+#Bans & Mutes 
+options:
+    Server: ServerName
+command /ban <offlineplayer=%player%> [<text>] [<text>]:
+    permission: sk.ban
+    trigger:
+        if arg 1 is not set:
+            send "&cPlease provide a player to ban. /banhelp"
+        if arg 1 is set:
+            if arg 2 is set:
+                if arg 3 is "-s":
+                    ban arg-1 due to arg-2
+                    kick arg-1
+                    send "&e%arg-1% &chas been banned &7[Silent]" to all players where [player input has permission "sk.getsbans"]
+                    send "&cReason: &f%arg-2%" to all players where [player input has permission "sk.getsbans"]
+                else:    
+                    if arg 1 is set:
+                        ban arg 1 due to "&cYou have been banned from {@Server}"
+                        kick arg-1
+                        broadcast "&6&m----------------------------------------------------"
+                        broadcast "&e%arg-1% &chas been permanenty"
+                        broadcast "&csuspended from the network."
+                        broadcast "&6&m----------------------------------------------------"
+
+command /unban <offlineplayer=%player%> [<text>] [<text>]:
+    permission: sk.unban
+    trigger:
+        if arg 1 is not set:
+            send "&cPlease specify a player /banhelp"
+        if arg 1 is set:
+            if arg-3 is "-s":
+                unban arg-1
+                send "&a%arg-1% &chas been pardoned" to all players where [player input has permission "sk.sbans"]
+                send "&cfrom the network. Reason: %arg-2% &7[Silent]" to all players where [player input has permission "sk.sbans"]
+            else:
+                unban arg-1
+                broadcast "&6&m----------------------------------------------------"
+                broadcast "&e%arg-1% &chas been"
+                broadcast "&cpardoned from the network. Reason: %arg-2%"
+                broadcast "&6&m----------------------------------------------------"
+
+command /kick <offlineplayer=%player%> [<text>] [<text>]:
+    permission: sk.kick
+    trigger:
+        if arg 1 is not set:
+            send "&cPlease provide a player and reason to kick. /modhelp"
+            if arg 3 is "-s":
+                kick arg 1
+                send "&a%arg-1% &chas been kicked. &7[Silent]" to all players where [player input has permission "sk.sbans"]
+            else:
+                if arg 1 is set:
+                    kick arg 1
+                    broadcast "&6&m-----------------------------------------------------"
+                    broadcast "&e%arg-1% &chas been"
+                    broadcast "&ckicked &cfrom the network."
+                    broadcast "&cReason&7:&c %arg-2%"
+                    broadcast "&6&m-----------------------------------------------------" 
+
+command /banhelp:
+    trigger:
+        send "&6&m-----------------------------------------------------"
+        send "&c /ban User Reason -s"
+        send "&c /ban User Reason"
+        send "&c /unban User Reason -s"
+        send "&c /unban User Reason"
+        send "&c /kick User Reason"
+        send "&c /kick User Reason -s"
+        send "&a-s &cdefines if players with sk.sbans can only see the ban / kick message."
+        send "&6&m-----------------------------------------------------"
+
+command /mute <offlineplayer=%player%> [<number>]:
+    permission: sk.mute
+    permission message: &cYou do not have permission for that!
+    executable by: players and console
+    trigger:
+        if arg 1 is not set:
+            message "&c/mute <player> <seconds>"
+        if arg 1 is set:
+            set {list::mod} to 1
+            set {mute.%arg 1%} to number-argument
+            add arg 1 to {list::*}
+            set {list::%player%} to true
+            broadcast "&a%arg 1% &cwas muted by &c%player%"
+            send "&aYou have been muted by %player% for %arg-2%" to arg-1
+every 1 second:
+    loop all players:
+        if {mute.%loop-player%} is more than 0:
+            remove 1 from {mute.%loop-player%}
+        else:
+            delete {mute.%loop-player%}
+
+on chat:
+    if {mute.%player%} is true:
+        cancel event
+
+every 20 seconds:
+    loop all players:
+        if {mute.%loop-player%} is more than 0:
+            set action bar of loop-player to "&6You can talk in &b%{mute.%loop-player%}% &cseconds."
+
+command /unmute <offlineplayer=%player%>:
+    permission: sk.mute
+    permission message: &cNo permission
+    executable by: players and console
+    trigger:
+        if arg 1 is not set:
+            send "&c/unmute <player>"
+        if arg 1 is set:
+            remove arg 1 from {list::*}
+            set {list::%player%} to false
+            delete {mute.%arg 1%}
+            broadcast "&a%arg-1% &cwas unmuted by &c%player%"
+            send "&aYou have been unmuted by %player%" to arg-1
+#Broadcast
+options:
+    Prefix: &cServerName
+# Color Of The Text ONLY PUT A & COLOR CODE
+    Color: &c
+
+# Color of Lines ONLY PUT A & COLOR CODE
+    Lines: &6
+
+# Permission Message
+    PermMSG: &cNo Permission
+
+command /broadcast <text>:
+    usage: /broadcast <text>
+    permission: broadcast.use
+    aliases: bc
+    executable by: players
+    permission message: {@PermMSG} 
+    trigger:
+        broadcast "&e"
+        broadcast "&e"
+        broadcast "{@Lines}&m----------------&m[{@Prefix}&m]{@Lines}&m----------------"
+        broadcast "&e"
+        broadcast "&7 {@Color}%argument% &7Sent by %player%" 
+        broadcast "&e"
+        stop
+        
+command /bc <text>:
+    usage: /bc <text>
+    permission: bc.use
+    aliases: bc
+    executable by: players
+    permission message: {@PermMSG} #EDIT THIS IN CONFIG
+    trigger:
+        broadcast "&e"
+        broadcast "&e"
+        broadcast "{@Lines}&m----------------&m[{@Prefix}&m&6]{@Lines}&m----------------"
+        broadcast "&e"
+        broadcast "&7» {@Color}%argument% &7- %player%"
+        broadcast "&e"
+        stop
+#GrantRank
+command /grant <player>:
+    permission:sk.grant
+    trigger:
+    usage: &c/grant <player>
+    trigger:
+        open chest with 2 rows named "&fRanks" to player
+        format slot 0 of player with 351:7 named "&aVIP" to close then run [execute player command "/pex user %arg-1% group set VIP"]
+        format slot 1 of player with 351:10 named "&aVIP&6+" to close then run [execute player command "/pex user %arg-1% group set VIP+"]
+        format slot 1 of player with 351:12 named "&bMVP" to close then run [execute player command "/pex user %arg-1% group set MVP"]
+        format slot 1 of player with 351:14 named "&bMVP&6+" to close then run [execute player command "/pex user %arg-1% group set MVP+"]
+        format slot 4 of player with 351:9 named "&eTrial-Mod" to close then run [execute player command "/pex user %arg-1% group set Trial-Mod"]
+        format slot 5 of player with 351:9 named "&3Mod" to close then run [execute player command "/pex user %arg-1% group set Mod"]
+        format slot 6 of player with 351:9 named "&3Senior-Mod" to close then run [execute player command "/pex user %arg-1% group set Senior-Mod"]
+        format slot 7 of player with 351:4 named "&cAdmin" to close then run [execute player command "/pex user %arg-1% group set Admin"]
+        format slot 8 of player with 351:11 named "&cSenior-Admin" to close then run [execute player command "/pex user %arg-1% group set Senior-Admin"]
+        format slot 9 of player with 351:11 named "&cPlat-Admin" to close then run [execute player command "/pex user %arg-1% group set Plat-Admin"]
+        format slot 10 of player with 351:11 named "&bManager" to close then run [execute player command "/pex user %arg-1% group set Manager"]
+        format slot 11 of player with 351:11 named "&6Developer" to close then run [execute player command "/pex user %arg-1% group set Developer"]
+        format slot 12 of player with 351:1 named "&6Lead-Developer" to close then run [execute player command "/pex user %arg-1% group set Lead-Developer"]
+        format slot 13 of player with 351:1 named "&cCo-Owner" to close then run [execute player command "/pex user %arg-1% group set Co-Owner"]
+        format slot 14 of player with 351:10 named "&cMedia-Owner" to close then run [execute player command "/pex user %arg-1% group set Media-Owner"]
+        format slot 15 of player with 351:12 named "&cOwner" to close then run [execute player command "/pex user %arg-1% group set Owner"]
+        format slot 16 of player with 351:1 named "&cYou&fTube" to close then run [execute player command "/pex user %arg-1% group set Youtube"]
+        format slot 17 of player with 351:1 named "&dPartner" to close then run [execute player command "/pex user %arg-1% group set Partner"]
+
+command /gmgrant <player>:
+    trigger:
+    usage: &c/gmgrant <player>
+    trigger:
+        open chest with 2 rows named "&fRanks" to player
+        format slot 0 of player with 351:7 named "&aVIP" to close then run [execute player command "/manuadd %arg-1% VIP"]
+        format slot 1 of player with 351:10 named "&aVIP&6+" to close then run [execute player command "/manuadd %arg-1% VIP+"]
+        format slot 1 of player with 351:12 named "&bMVP" to close then run [execute player command "/manuadd %arg-1% MVP"]
+        format slot 1 of player with 351:14 named "&bMVP&6+" to close then run [execute player command "/manuadd %arg-1% MVP+"]
+        format slot 4 of player with 351:9 named "&eTrial-Mod" to close then run [execute player command "/manuadd %arg-1% Trial-Mod"]
+        format slot 5 of player with 351:9 named "&3Mod" to close then run [execute player command "/manuadd %arg-1% Mod"]
+        format slot 6 of player with 351:9 named "&3Senior-Mod" to close then run [execute player command "/manuadd %arg-1% Senior-Mod"]
+        format slot 7 of player with 351:4 named "&cAdmin" to close then run [execute player command "/manuadd %arg-1% Admin"]
+        format slot 8 of player with 351:11 named "&cSenior-Admin" to close then run [execute player command "/manuadd %arg-1% Senior-Admin"]
+        format slot 9 of player with 351:11 named "&cPlat-Admin" to close then run [execute player command "/manuadd %arg-1% Plat-Admin"]
+        format slot 10 of player with 351:11 named "&bManager" to close then run [execute player command "/manuadd %arg-1% Manager"]
+        format slot 11 of player with 351:11 named "&6Developer" to close then run [execute player command "/manuadd %arg-1% Developer"]
+        format slot 12 of player with 351:1 named "&6Lead-Developer" to close then run [execute player command "/manuadd %arg-1% Lead-Developer"]
+        format slot 13 of player with 351:1 named "&cCo-Owner" to close then run [execute player command "/manuadd %arg-1% Co-Owner"]
+        format slot 14 of player with 351:10 named "&cMedia-Owner" to close then run [execute player command "/manuadd %arg-1% Media-Owner"]
+        format slot 15 of player with 351:12 named "&cOwner" to close then run [execute player command "/manuadd %arg-1% Owner"]
+        format slot 16 of player with 351:1 named "&cYou&fTube" to close then run [execute player command "/manuadd %arg-1% Youtube"]
+        format slot 17 of player with 351:1 named "&dPartner" to close then run [execute player command "/manuadd %arg-1% Partner"]
+        
+#Scoreboard
+options:
+    Name: &b&lServerName
+
+every 1 seconds:
+    loop all players:
+        wipe loop-player's sidebar
+        set name of sidebar of loop-player to "&b&lServerName"
+        set score "" in sidebar of loop-player to 10
+        set score "&bRank:" in sidebar of loop-player to 9
+        set {_prefix} to "%colored loop-player's prefix%"
+        replace all "[" and "]" with "" in {_prefix}
+        set {_suffix} to "%colored loop-player's suffix%"
+        replace all "[" and "]" with "" in {_suffix}
+        replace all " " and " " with "" in {_suffix}
+        if length of {_suffix} is greater than 2:
+            set score " %{_prefix}%" in sidebar of loop-player to 8
+        else:
+            set score " %{_prefix}%" in sidebar of loop-player to 8
+        set score "&d" in sidebar of loop-player to 7
+        set score "&bTag&f:" in sidebar of loop-player to 6
+        set score " &c%{_suffix}%" in sidebar of loop-player to 5
+        set score "&e" in sidebar of loop-player to 4
+        set score "&bOnline&f:" in sidebar of     loop-player to 3
+        set score " &f%number of all players%&b/&f%max player amount%" in sidebar of loop-player to 2
+        set score "&2" in sidebar of loop-player to 1
+
+#Ping
+command /ping [<player>]:
+    aliases: /pong
+    trigger:
+        if arg 1 is not set:
+            send "&cThe ping varible is unuseable on minehut. Due to errors ping is disabled."
+        else:
+            send "&cThe ping varible is unuseable on minehut. Due to errors ping is disabled."
+#FakePluginList
+options:
+    Count: 1
+command /pl:
+    aliases: plugins
+    trigger:
+        send "&fPlugins ({@Count}): &aExample&f, &aExample1&f, &aExample2&f, &aExample3&f, &aMatrix&f, &aNPC" to player
