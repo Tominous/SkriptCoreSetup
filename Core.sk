@@ -299,55 +299,15 @@ command /bc <text>:
         broadcast "&e"
         stop
 #GrantRank
-command /grant <player>:
-    permission:sk.grant
+command /grant <offlineplayer=%player%> [<text>]:
     trigger:
-    usage: &c/grant <player>
-    trigger:
-        open chest with 2 rows named "&fRanks" to player
-        format slot 0 of player with 351:7 named "&aVIP" to close then run [execute player command "/pex user %arg-1% group set VIP"]
-        format slot 1 of player with 351:10 named "&aVIP&6+" to close then run [execute player command "/pex user %arg-1% group set VIP+"]
-        format slot 1 of player with 351:12 named "&bMVP" to close then run [execute player command "/pex user %arg-1% group set MVP"]
-        format slot 1 of player with 351:14 named "&bMVP&6+" to close then run [execute player command "/pex user %arg-1% group set MVP+"]
-        format slot 4 of player with 351:9 named "&eTrial-Mod" to close then run [execute player command "/pex user %arg-1% group set Trial-Mod"]
-        format slot 5 of player with 351:9 named "&3Mod" to close then run [execute player command "/pex user %arg-1% group set Mod"]
-        format slot 6 of player with 351:9 named "&3Senior-Mod" to close then run [execute player command "/pex user %arg-1% group set Senior-Mod"]
-        format slot 7 of player with 351:4 named "&cAdmin" to close then run [execute player command "/pex user %arg-1% group set Admin"]
-        format slot 8 of player with 351:11 named "&cSenior-Admin" to close then run [execute player command "/pex user %arg-1% group set Senior-Admin"]
-        format slot 9 of player with 351:11 named "&cPlat-Admin" to close then run [execute player command "/pex user %arg-1% group set Plat-Admin"]
-        format slot 10 of player with 351:11 named "&bManager" to close then run [execute player command "/pex user %arg-1% group set Manager"]
-        format slot 11 of player with 351:11 named "&6Developer" to close then run [execute player command "/pex user %arg-1% group set Developer"]
-        format slot 12 of player with 351:1 named "&6Lead-Developer" to close then run [execute player command "/pex user %arg-1% group set Lead-Developer"]
-        format slot 13 of player with 351:1 named "&cCo-Owner" to close then run [execute player command "/pex user %arg-1% group set Co-Owner"]
-        format slot 14 of player with 351:10 named "&cMedia-Owner" to close then run [execute player command "/pex user %arg-1% group set Media-Owner"]
-        format slot 15 of player with 351:12 named "&cOwner" to close then run [execute player command "/pex user %arg-1% group set Owner"]
-        format slot 16 of player with 351:1 named "&cYou&fTube" to close then run [execute player command "/pex user %arg-1% group set Youtube"]
-        format slot 17 of player with 351:1 named "&dPartner" to close then run [execute player command "/pex user %arg-1% group set Partner"]
-
-command /gmgrant <player>:
-    trigger:
-    usage: &c/gmgrant <player>
-    trigger:
-        open chest with 2 rows named "&fRanks" to player
-        format slot 0 of player with 351:7 named "&aVIP" to close then run [execute player command "/manuadd %arg-1% VIP"]
-        format slot 1 of player with 351:10 named "&aVIP&6+" to close then run [execute player command "/manuadd %arg-1% VIP+"]
-        format slot 1 of player with 351:12 named "&bMVP" to close then run [execute player command "/manuadd %arg-1% MVP"]
-        format slot 1 of player with 351:14 named "&bMVP&6+" to close then run [execute player command "/manuadd %arg-1% MVP+"]
-        format slot 4 of player with 351:9 named "&eTrial-Mod" to close then run [execute player command "/manuadd %arg-1% Trial-Mod"]
-        format slot 5 of player with 351:9 named "&3Mod" to close then run [execute player command "/manuadd %arg-1% Mod"]
-        format slot 6 of player with 351:9 named "&3Senior-Mod" to close then run [execute player command "/manuadd %arg-1% Senior-Mod"]
-        format slot 7 of player with 351:4 named "&cAdmin" to close then run [execute player command "/manuadd %arg-1% Admin"]
-        format slot 8 of player with 351:11 named "&cSenior-Admin" to close then run [execute player command "/manuadd %arg-1% Senior-Admin"]
-        format slot 9 of player with 351:11 named "&cPlat-Admin" to close then run [execute player command "/manuadd %arg-1% Plat-Admin"]
-        format slot 10 of player with 351:11 named "&bManager" to close then run [execute player command "/manuadd %arg-1% Manager"]
-        format slot 11 of player with 351:11 named "&6Developer" to close then run [execute player command "/manuadd %arg-1% Developer"]
-        format slot 12 of player with 351:1 named "&6Lead-Developer" to close then run [execute player command "/manuadd %arg-1% Lead-Developer"]
-        format slot 13 of player with 351:1 named "&cCo-Owner" to close then run [execute player command "/manuadd %arg-1% Co-Owner"]
-        format slot 14 of player with 351:10 named "&cMedia-Owner" to close then run [execute player command "/manuadd %arg-1% Media-Owner"]
-        format slot 15 of player with 351:12 named "&cOwner" to close then run [execute player command "/manuadd %arg-1% Owner"]
-        format slot 16 of player with 351:1 named "&cYou&fTube" to close then run [execute player command "/manuadd %arg-1% Youtube"]
-        format slot 17 of player with 351:1 named "&dPartner" to close then run [execute player command "/manuadd %arg-1% Partner"]
-        
+        if arg 1 is not set:
+            send "&cPlease provide a player to grant."
+        if arg 2 is not set:
+            send "&cPlease provide a rank to grant to %arg-1%."
+        else:
+            make player execute command "/pex user %arg-1% group set %arg-2%"
+            send "%arg-1%'s rank has been set to %arg-2%"
 #Scoreboard
 options:
     Name: &b&lServerName
