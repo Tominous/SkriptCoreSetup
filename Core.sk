@@ -6,6 +6,7 @@
 #sk.unban
 #sk.mute
 #sk.grant
+#sk.tag
 
 #Minehut Core - DO NOT USE GAMEAPI
 #Ignore Scoreboard Errors
@@ -22,7 +23,21 @@
 #Vault
 #PermissionsEx - For /grant
 #If you don't use pex use /gmgrant for GroupManager
-#Skript By H3A - v1.5
+#Skript By H3A - v1.7
+
+#Tag
+command /tag [<text>]:
+    permission: sk.tag
+    trigger:
+        if arg-1 is not set:
+            make console execute command "/pex user %player% suffix """""
+            send "&cTag Reset!"
+        if arg-1 is set:
+            make console execute command "/pex user %player% suffix "" %arg-1%"""
+            send "&cTag set to: &a%arg-1%"
+
+
+
 
 #2FA
 options:
@@ -163,10 +178,10 @@ command /ban <offlineplayer=%player%> [<text>] [<text>]:
                     if arg 1 is set:
                         ban arg 1 due to "&cYou have been banned from {@Server}"
                         kick arg-1
-                        broadcast "&6&m----------------------------------------------------"
+                        broadcast "&c&m⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼"
                         broadcast "&e%arg-1% &chas been permanenty"
                         broadcast "&csuspended from the network."
-                        broadcast "&6&m----------------------------------------------------"
+                        broadcast "&c&m⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼"
 
 command /unban <offlineplayer=%player%> [<text>] [<text>]:
     permission: sk.unban
@@ -180,31 +195,31 @@ command /unban <offlineplayer=%player%> [<text>] [<text>]:
                 send "&cfrom the network. Reason: %arg-2% &7[Silent]" to all players where [player input has permission "sk.sbans"]
             else:
                 unban arg-1
-                broadcast "&6&m----------------------------------------------------"
+                broadcast "&c&m⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼"
                 broadcast "&e%arg-1% &chas been"
                 broadcast "&cpardoned from the network. Reason: %arg-2%"
-                broadcast "&6&m----------------------------------------------------"
+                broadcast "&c&m⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼"
 
-command /kick <offlineplayer=%player%> [<text>] [<text>]:
+command /kick <player> [<text>] [<text>]:
     permission: sk.kick
     trigger:
         if arg 1 is not set:
             send "&cPlease provide a player and reason to kick. /modhelp"
-            if arg 3 is "-s":
+        if arg 3 is "-s":
+            kick arg 1
+            send "&a%arg-1% &chas been kicked. &7[Silent]" to all players where [player input has permission "sk.sbans"]
+        else:
+            if arg 1 is set:
                 kick arg 1
-                send "&a%arg-1% &chas been kicked. &7[Silent]" to all players where [player input has permission "sk.sbans"]
-            else:
-                if arg 1 is set:
-                    kick arg 1
-                    broadcast "&6&m-----------------------------------------------------"
-                    broadcast "&e%arg-1% &chas been"
-                    broadcast "&ckicked &cfrom the network."
-                    broadcast "&cReason&7:&c %arg-2%"
-                    broadcast "&6&m-----------------------------------------------------" 
+                broadcast "&c&m⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼"
+                broadcast "&e%arg-1% &chas been"
+                broadcast "&ckicked &cfrom the network."
+                broadcast "&cReason&7:&c %arg-2%"
+                broadcast "&c&m⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼" 
 
 command /banhelp:
     trigger:
-        send "&6&m-----------------------------------------------------"
+        send "&c&m⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼"
         send "&c /ban User Reason -s"
         send "&c /ban User Reason"
         send "&c /unban User Reason -s"
@@ -212,7 +227,7 @@ command /banhelp:
         send "&c /kick User Reason"
         send "&c /kick User Reason -s"
         send "&a-s &cdefines if players with sk.sbans can only see the ban / kick message."
-        send "&6&m-----------------------------------------------------"
+        send "&c&m⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼"
 
 command /mute <offlineplayer=%player%> [<number>]:
     permission: sk.mute
@@ -278,7 +293,7 @@ command /broadcast <text>:
     trigger:
         broadcast "&e"
         broadcast "&e"
-        broadcast "{@Lines}&m----------------&m[{@Prefix}&m]{@Lines}&m----------------"
+        broadcast "{@Lines}&m________________&m[{@Prefix}&m]{@Lines}&m________________"
         broadcast "&e"
         broadcast "&7 {@Color}%argument% &7Sent by %player%" 
         broadcast "&e"
@@ -293,7 +308,7 @@ command /bc <text>:
     trigger:
         broadcast "&e"
         broadcast "&e"
-        broadcast "{@Lines}&m----------------&m[{@Prefix}&m&6]{@Lines}&m----------------"
+        broadcast "{@Lines}&m________________&m[{@Prefix}&m&6]{@Lines}&m________________"
         broadcast "&e"
         broadcast "&7» {@Color}%argument% &7- %player%"
         broadcast "&e"
@@ -310,29 +325,29 @@ command /grant <offlineplayer=%player%> [<text>]:
             send "%arg-1%'s rank has been set to %arg-2%"
 #Scoreboard
 options:
-    Name: &b&lServerName
+    Name: &c&lServerName
 
 every 1 seconds:
     loop all players:
         wipe loop-player's sidebar
-        set name of sidebar of loop-player to "&b&lServerName"
+        set name of sidebar of loop-player to "&c&lServerName"
         set score "" in sidebar of loop-player to 10
-        set score "&bRank:" in sidebar of loop-player to 9
+        set score "&cRank:" in sidebar of loop-player to 9
         set {_prefix} to "%colored loop-player's prefix%"
         replace all "[" and "]" with "" in {_prefix}
         set {_suffix} to "%colored loop-player's suffix%"
         replace all "[" and "]" with "" in {_suffix}
         replace all " " and " " with "" in {_suffix}
         if length of {_suffix} is greater than 2:
-            set score " %{_prefix}%" in sidebar of loop-player to 8
+            set score " %rounded down player's money%" in sidebar of loop-player to 8
         else:
             set score " %{_prefix}%" in sidebar of loop-player to 8
         set score "&d" in sidebar of loop-player to 7
-        set score "&bTag&f:" in sidebar of loop-player to 6
-        set score " &c%{_suffix}%" in sidebar of loop-player to 5
+        set score "&cMoney&f:" in sidebar of loop-player to 6
+        set score " &c" in sidebar of loop-player to 5
         set score "&e" in sidebar of loop-player to 4
-        set score "&bOnline&f:" in sidebar of     loop-player to 3
-        set score " &f%number of all players%&b/&f%max player amount%" in sidebar of loop-player to 2
+        set score "&cOnline&f:" in sidebar of     loop-player to 3
+        set score " &f%number of all players%&c/&f%max player amount%" in sidebar of loop-player to 2
         set score "&2" in sidebar of loop-player to 1
 
 #Ping
