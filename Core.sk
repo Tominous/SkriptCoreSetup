@@ -29,10 +29,10 @@ command /tag [<text>]:
     permission: sk.tag
     trigger:
         if arg-1 is not set:
-            make console execute command "/pex user %player% suffix """""
+            make console execute command "/luckperms user %player% meta setsuffix suffix """""
             send "&cTag Reset!"
         if arg-1 is set:
-            make console execute command "/pex user %player% suffix "" %arg-1%"""
+            make console execute command "/luckperms user %player% meta setsuffix "%player% suffix" "" %arg-1%"""
             send "&cTag set to: &a%arg-1%"
 
 
@@ -320,7 +320,7 @@ command /grant <offlineplayer=%player%> [<text>]:
         if arg 2 is not set:
             send "&cPlease provide a rank to grant to %arg-1%."
         else:
-            make player execute command "/pex user %arg-1% group set %arg-2%"
+            make player execute command "/luckperms user %arg-1% parent set %arg-2%"
             send "%arg-1%'s rank has been set to %arg-2%"
 #Scoreboard
 options:
